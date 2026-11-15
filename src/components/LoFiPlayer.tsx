@@ -6,7 +6,7 @@ import {
   type MusicTrack,
 } from '../utils/music'
 
-function LoFiPlayerContent() {
+function LoFiPlayerContent({ enabled }: { enabled: boolean }) {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0].name)
@@ -20,6 +20,8 @@ function LoFiPlayerContent() {
   const currentTrack = tracks[currentIndex]
 
   useEffect(() => {
+    if (!enabled) return
+
     let cancelled = false
 
     async function loadTracks() {
@@ -72,24 +74,35 @@ function LoFiPlayerContent() {
     return () => {
       cancelled = true
     }
-  }, [selectedPlaylist])
+  }, [selectedPlaylist, enabled])
 
+  // Update the audio source only when the selected track changes.
   useEffect(() => {
     const audio = audioRef.current
 
     if (!audio || !currentTrack) return
 
-    audio.pause()
     audio.src = currentTrack.audioUrl
+    audio.load()
+  }, [currentTrack])
+
+  // Control playback without resetting the current track.
+  useEffect(() => {
+    const audio = audioRef.current
+
+    if (!audio) return
+
     audio.volume = volume / 100
 
-    if (isPlaying) {
+    if (isPlaying && currentTrack) {
       audio.play().catch(() => {
         setIsPlaying(false)
         setError('Playback failed. Try another track.')
       })
+    } else {
+      audio.pause()
     }
-  }, [currentTrack, isPlaying])
+  }, [isPlaying, volume, currentTrack])
 
   const togglePlayback = async () => {
     const audio = audioRef.current
@@ -310,11 +323,10 @@ function LoFiPlayer() {
         </span>
       </button>
 
-      {expanded && (
-        <div className="mt-3">
-          <LoFiPlayerContent />
-        </div>
-      )}
+      {/* Keep the player mounted so its audio continues while collapsed. */}
+      <div className={expanded ? 'mt-3' : 'hidden'}>
+        <LoFiPlayerContent enabled={expanded} />
+      </div>
     </div>
   )
 }
