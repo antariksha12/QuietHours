@@ -1,0 +1,61 @@
+
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  color-scheme: dark;
+
+  /* Warm Midnight — QuietHours */
+
+  --qh-background: #171816;
+  --qh-surface: #20211e;
+  --qh-surface-raised: #292a25;
+
+  --qh-walnut: #49382b;
+  --qh-olive: #899477;
+
+  --qh-ivory: #e9e2d5;
+  --qh-taupe: #aaa295;
+
+  --qh-border: #383832;
+
+  color: var(--qh-ivory);
+  background: var(--qh-background);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--qh-background);
+  color: var(--qh-ivory);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--qh-olive);
+  color: #171816;
+}
